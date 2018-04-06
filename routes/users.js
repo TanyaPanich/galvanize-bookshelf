@@ -5,6 +5,8 @@ const knex = require('../knex')
 const { camelizeKeys, decamelizeKeys } = require('humps')
 const bcrypt = require('bcrypt');
 const boom = require('boom')
+const jwt = require('jsonwebtoken')
+
 
 // eslint-disable-next-line new-cap
 const router = express.Router();
@@ -28,13 +30,14 @@ router.post('/', (req,res,next) => {
     })
       //.returning('*')
     .then(user => {
-      console.log(user)
+      const token = jwt.sign({'email': req.body.email }, process.env.JWT_KEY)
       const newUser ={
         id: user[0].id,
         firstName: user[0].first_name,
         lastName: user[0].last_name,
         email: user[0].email
     }
+    res.setHeader('Set-Cookie', `token=${token}; Path=\/;.+HttpOnly`)
     res.status(200).send(newUser)
   })
   .catch(err => {
