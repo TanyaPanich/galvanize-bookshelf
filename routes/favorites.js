@@ -47,4 +47,24 @@ router.get('/', verifyToken, (req, res, next) => {
     })
   })
 
+  router.get('/check', verifyToken, (req, res, next) => {
+    const bookId = Number.parseInt(req.query.bookId)
+    const userId = req.cookies.token
+    if(isNaN(bookId)) next(boom.badRequest('Book ID must be an integer'))
+    knex('books')
+      .innerJoin('favorites', 'books.id', 'favorites.book_id')
+      .innerJoin('users', 'favorites.user_id', 'users.id')
+      .where({'favorites.book_id': bookId,
+              'users.email': req.token.email})
+      .then((result) => {
+        if(result.length > 0) {
+          return res.json(true)
+        }
+        return res.json(false)
+      })
+      .catch((err) => {
+        next(err)
+      })
+  })
+
 module.exports = router;
