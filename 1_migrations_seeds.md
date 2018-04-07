@@ -36,6 +36,7 @@ Then, generate a cryptographic key that'll be used for the JWT signature. You'll
 ```shell
 bash -c 'echo "JWT_KEY="$(openssl rand -base64 64)' > .env
 ```
+heroku config:set JWT_KEY:"$(openssl rand -base64 64)"
 
 Finally, ensure the test suite can connect to the right database.
 
