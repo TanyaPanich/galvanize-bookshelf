@@ -67,4 +67,37 @@ router.get('/', verifyToken, (req, res, next) => {
       })
   })
 
+  function getUserId(req, res, next){
+    const token = req.cookies.token
+    if (token) {
+      const decoded = jwt.decode(token)
+      knex('users')
+        .select(['id'])
+        .where('email', decoded.email)
+        .first()
+        .then((userData) => {
+          req.userId = userData.id
+          next()
+        })
+        .catch(err => next(err))
+    } else {
+      next(boom.unauthorized())
+    }
+  }
+
+  router.post('/', getUserId, (req, res, next) => {
+    const bookId = Number.parseInt(req.body.bookId)
+    if(isNaN(bookId)) next(boom.badRequest('Book ID must be an integer'))
+    knex('favorites')
+    .insert([{book_id: bookId,
+            user_id: req.userId}])
+    .returning(['id', 'book_id', 'user_id'])
+    .then((newFav) => {
+      res.json(camelizeKeys(newFav[0]))
+    })
+    .catch(err => {
+      next(err)
+    })
+  })
+
 module.exports = router;
