@@ -70,7 +70,7 @@ app.use((err, _req, res, _next) => {
 });
 
 const port = process.env.PORT || 8000;
-
+console.log("PORT:", port)
 app.listen(port, () => {
   if (app.get('env') !== 'test') {
     // eslint-disable-next-line no-console
