@@ -100,4 +100,20 @@ router.get('/', verifyToken, (req, res, next) => {
     })
   })
 
+  router.delete('/', getUserId, (req, res, next) => {
+    const bookId = Number.parseInt(req.body.bookId)
+    if(isNaN(bookId)) next(boom.badRequest('Book ID must be an integer'))
+    const clause = { book_id: bookId, user_id: req.userId }
+    knex('favorites')
+      .where(clause)
+      .del()
+      .returning(['book_id', 'user_id'])
+      .then((deletedBook) => {
+      res.json(camelizeKeys(deletedBook[0]))
+    })
+    .catch(err => {
+      next(err)
+    })
+  })
+
 module.exports = router;
