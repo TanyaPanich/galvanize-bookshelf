@@ -86,13 +86,23 @@ router.get('/', verifyToken, (req, res, next) => {
   }
 
   router.post('/', getUserId, (req, res, next) => {
+    if (isNaN(req.body.bookId))
+      return next(boom.badRequest('Book ID must be an integer'))
+
     const bookId = Number.parseInt(req.body.bookId)
-    if(isNaN(bookId)) next(boom.badRequest('Book ID must be an integer'))
+    knex('books')
+      .where('id', bookId)
+      .first()
+      .then((book) =>{
+        if(!book) next(boom.notFound('Book not found'))
+        return
+      })
     knex('favorites')
     .insert([{book_id: bookId,
             user_id: req.userId}])
     .returning(['id', 'book_id', 'user_id'])
     .then((newFav) => {
+      //if(!newFav) next(boom.notFound('Book not found'))
       res.json(camelizeKeys(newFav[0]))
     })
     .catch(err => {
@@ -109,7 +119,9 @@ router.get('/', verifyToken, (req, res, next) => {
       .del()
       .returning(['book_id', 'user_id'])
       .then((deletedBook) => {
-      res.json(camelizeKeys(deletedBook[0]))
+        if(deletedBook.length < 1)
+          return next(boom.notFound('Favorite not found'))
+        res.json(camelizeKeys(deletedBook[0]))
     })
     .catch(err => {
       next(err)
