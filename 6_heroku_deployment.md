@@ -40,6 +40,8 @@ npm run knex seed:run
 exit
 1. Visit the Heroku app at `https://USERNAME-galvanize-bookshelf.herokuapp.com/`.
 1. If the application isn't working, check the production logs with `heroku logs`.
+in separate terminal while deploying run:
+ heroku logs -t
 1. Otherwise, celebrate with a beverage of choice!
 
 ## Post-deployment
