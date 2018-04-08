@@ -41,7 +41,7 @@ Next, complete the following deployment steps.
 heroku run bash
 npm run knex seed:run
 exit
-1. Visit the Heroku app at `https://USERNAME-galvanize-bookshelf.herokuapp.com/`.
+1. Visit the Heroku app at `https://USERNAME-galvanize-bookshelf.herokuapp.com/`. (or heroku open)
 1. If the application isn't working, check the production logs with `heroku logs`.
 in separate terminal while deploying run:
  heroku logs -t
