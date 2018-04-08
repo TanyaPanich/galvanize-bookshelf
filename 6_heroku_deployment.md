@@ -10,10 +10,13 @@ https://vimeo.com/207720558
 ## Pre-deployment
 
 First, complete the following pre-deployment steps.
-tanyapanich-galvanize-bookshelf
 1. Create a Heroku app called `USERNAME-galvanize-bookshelf` where `USERNAME` is your GitHub username in lowercase form.
+heroku create tpanich-galvanize-bookshelf
 1. Generate a cryptographic key for the JWT signature and set it to the `JWT_KEY` config variable of the new Heroku app.
+First, create JWT_KEY:
 bash -c 'echo "JWT_KEY="$(openssl rand -base64 64)'
+Second, set it:
+heroku config:set JWT_KEY=lalalala
 1. Update the `package.json` file with a dependency to a specific Node.js version.
 1. Enable the Heroku PostgreSQL add-on for the new Heroku app.
 heroku addons:create heroku-postgresql:hobby-dev
